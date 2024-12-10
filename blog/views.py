@@ -9,6 +9,17 @@ from django.urls import reverse
 # Create your views here.
 
 class PostList(generic.ListView):
+    """
+    A view to display a list of published blog posts.
+
+    This view retrieves all blog posts that are published (status = 1),
+    paginates the results, and renders them using the specified template.
+
+    Attributes:
+        queryset (QuerySet): A queryset of published Post objects.
+        template_name (str): The template used to render the list of posts.
+        paginate_by (int): The number of posts displayed per page.
+    """
     queryset = Post.objects.filter(status=1)
     template_name = "blog/index.html"
     paginate_by = 6
@@ -33,7 +44,6 @@ def post_detail(request, slug):
     comments = post.comments.all().order_by("-created_on")
     comment_count = post.comments.filter(approved=True).count()
     if request.method == "POST":
-        print("Received a POST request")
         comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
             comment = comment_form.save(commit=False)
@@ -47,7 +57,6 @@ def post_detail(request, slug):
 
     
     comment_form = CommentForm()
-    print("About to render template")
 
     return render(
         request,
